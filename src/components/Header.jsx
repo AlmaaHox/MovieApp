@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+// Header.jsx
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { MoviesContext } from '../App';
 import './Header.css';
 
-const Header = ({ searchMovies }) => {
+const Header = ({ clearSearch }) => {
+    const { searchMovies, searchTVShows } = useContext(MoviesContext);
     const [searchInput, setSearchInput] = useState('');
 
     const handleSearch = () => {
-        searchMovies(searchInput);
+        if (window.location.pathname === '/movies') {
+            searchMovies(searchInput);
+        } else if (window.location.pathname === '/tvshows') {
+            searchTVShows(searchInput);
+        }
         setSearchInput('');
-    };
-
-    const clearSearch = () => {
-        setSearchInput('');
-        setFetchUrl(`${import.meta.env.VITE_API_BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${import.meta.env.VITE_API_KEY}`);
     };
 
     return (
@@ -22,8 +24,7 @@ const Header = ({ searchMovies }) => {
                     <li><Link to="/movies" onClick={clearSearch}>Movies</Link></li>
                     <li><Link to="/tvshows" onClick={clearSearch}>TV Shows</Link></li>
                 </ul>
-            </nav>
-            <div className='search-container'>
+                <div className='search-container'>
                     <input
                         type='text'
                         placeholder='Search...'
@@ -32,6 +33,7 @@ const Header = ({ searchMovies }) => {
                     />
                     <button onClick={handleSearch}>Search</button>
                 </div>
+            </nav>
         </header>
     );
 };
